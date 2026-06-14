@@ -1,32 +1,42 @@
-# PmagPy Assistant Knowledge Base
+# PmagPylot
 
-This repository is a community-maintained knowledge base that allows a large language model (LLM) to act as a natural-language assistant for paleomagnetic data analysis using [PmagPy](https://github.com/PmagPy/PmagPy).
+**PmagPylot** is a community-maintained knowledge base that allows a large language model (LLM) to act as a natural-language assistant for paleomagnetic data analysis using [PmagPy](https://github.com/PmagPy/PmagPy).
 
-It is **not code** — it is a set of plain-text documents (Markdown and YAML) that describe:
+It is **not code** — it is a set of plain-text documents (Markdown) that describe:
 
 - Common analytical workflows and the order steps should happen in
 - Prerequisites and assumptions that should be checked before running a test
 - How to interpret results in plain language
-- Descriptions of PmagPy functions written for an LLM audience
+- A function-use policy and reference describing which PmagPy functions to call (and how) for a given task
 - Data loading and formatting conventions (e.g. MagIC database access)
 
 ## How to use this knowledge base
 
-At the start of a session with an LLM (e.g. Claude, ChatGPT, Gemini), point it at this repository and ask it to read the relevant files before helping with your analysis. For example:
+At the start of a session with an LLM (e.g. Claude, ChatGPT, Gemini), point it at this repository's index file and ask it to read and follow it:
 
-> "Please fetch and read the files at
-> `https://raw.githubusercontent.com/dave-heslop74/PmagPylot/main/INDEX.md`
-> and follow the index to load the reversal test workflow. Then help me run a
-> reversal test on MagIC contribution 16663."
+> "Please fetch and read
+> https://raw.githubusercontent.com/dave-heslop74/PmagPylot/main/INDEX.md
+> and follow it to load whatever else is relevant. I'd like your help with a
+> paleomagnetic data analysis."
 
-The LLM will use the `INDEX.md` file to decide which other files are relevant and fetch those too.
+The LLM will use `INDEX.md` to decide which other files are relevant and fetch those too — there is no need to provide any other links up front.
+
+### What should happen next
+
+Following `INDEX.md`, the assistant should respond by introducing itself as **PmagPylot** and:
+
+1. Briefly state what it can currently help with, based on what's actually in this knowledge base (currently: the reversal/common mean test workflow — see Status below; this will grow as more workflow files are added)
+2. Give a few concrete example prompts the user could try
+3. Ask the user to download the relevant MagIC contribution(s) from [earthref.org/MagIC](https://www2.earthref.org/MagIC) (as a zip file) and upload/attach them to the conversation, if not already provided — see `conventions/data_loading.md` for why this is the primary data-loading method in chat environments, and how it's handled once uploaded
+
+If a user's request isn't covered by the current knowledge base, the assistant should say so plainly (per `INDEX.md`, "Modules not yet available") rather than improvising a workflow.
 
 ## Versioning and reproducibility
 
 For published analyses, we recommend specifying a release tag or commit hash rather than `main`, so that the knowledge base version used is recorded alongside the PmagPy version. For example:
 
 > "...read the files at
-> `https://raw.githubusercontent.com/<org>/pmagpy-assistant-knowledge/v0.1.0/INDEX.md`..."
+> `https://raw.githubusercontent.com/dave-heslop74/PmagPylot/v0.1.0/INDEX.md`..."
 
 ## Contributing
 
@@ -45,6 +55,6 @@ This is an early demonstration version. It currently covers:
 - A function-use policy (`functions/policy.md`) requiring real PmagPy function calls rather than improvised calculations
 - An auto-generated reference of the full `pmagpy.ipmag` API plus a curated `pmagpy.pmag` subset (`functions/reference_index.md`), generated against PmagPy 4.3.15
 - Hand-curated, verified documentation for the statistics/test functions used by the reversal test workflow (`functions/statistics_and_tests.md`)
-- Real worked examples from development/testing, including a documented disagreement between two statistical tests on the same dataset (`community/edge_cases.md`)
+- Real worked examples from development/testing, including a documented disagreement between two statistical tests on the same dataset, and notes on data-loading constraints in sandboxed environments (`community/edge_cases.md`)
 
 See `INDEX.md` for the full module list and what is not yet covered.
