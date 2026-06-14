@@ -4,32 +4,34 @@ This document describes how to load a dataset from the MagIC database given a co
 
 ## Retrieving a contribution from MagIC
 
-MagIC contributions can be downloaded via the EarthRef API:
-
-```
-https://api.earthref.org/v1/MagIC/contribution/{ID}
-```
-
-This returns the contribution as a tab-delimited text file containing multiple tables (e.g. `sites`, `samples`, `specimens`, `measurements`), each preceded by a header line indicating the table name.
-
-### Example: loading contribution 16663
+**Preferred method: `ipmag.download_magic_from_id()`** — per `functions/policy.md`, prefer this tested PmagPy function over hand-rolled `requests` calls to the MagIC API:
 
 ```python
-import requests
-import pmagpy.pmag as pmag
 import pmagpy.ipmag as ipmag
-import pandas as pd
 
-contribution_id = "16663"
+success, result = ipmag.download_magic_from_id("19938", directory="./data/")
+if success:
+    contribution_file = result  # e.g. 'magic_contribution_19938.txt'
+else:
+    print("Download failed:", result)
+```
 
-url = f"https://api.earthref.org/v1/MagIC/contribution/{contribution_id}"
-r = requests.get(url, headers={'Accept': 'text/plain'})
+This downloads the contribution as a tab-delimited text file containing multiple tables (e.g. `sites`, `samples`, `specimens`, `measurements`), each preceded by a header line indicating the table name. Internally, this function makes a request to `https://api.earthref.org/v1/MagIC/data`.
 
-with open('magic_contribution.txt', 'w') as f:
-    f.write(r.text)
+**Note on execution environments:** Some sandboxed code-execution environments (including, at the time of writing, claude.ai's bash/code tool) restrict outbound network access to an allowlist of domains that does not include `api.earthref.org`. `ipmag.download_magic_from_id()` will fail in such environments (typically returning `success=False` with a "Forbidden" error) for exactly the same underlying reason a direct `requests.get()` to the same host would fail — **this is not a bug in the function**, and switching to a manual `requests` call will not help, since it hits the same host. If this happens, do not keep retrying variations of the API call — instead use the alternative method below. In environments with normal network access (e.g. a local install, Tier 1/2 deployments — see `README.md`), this function works as expected.
 
-# Unpack into individual MagIC-format tables
-ipmag.download_magic('magic_contribution.txt', dir_path='./data/')
+### Alternative: user downloads and uploads the data directly
+
+If direct API access is unavailable, ask the user to download the contribution from the MagIC web interface (e.g. `https://www2.earthref.org/MagIC/{ID}` or via search results on earthref.org) — this downloads as a zip file containing one or more `magic_contribution_{ID}.txt` files — and upload/attach it to the conversation. This file can then be unzipped and parsed exactly as described below, entirely locally, with no network access required. This is a fully viable primary workflow, not just a fallback — see `README.md` for discussion of deployment tiers.
+
+A single zip may contain multiple contribution files if the user downloaded multiple search results; check which file(s) actually contain a `sites` table (via `tab delimited\tsites` in the file) before proceeding, and confirm with the user if more than one candidate is found.
+
+### Unpacking a contribution file into MagIC-format tables
+
+Once a contribution file is available (whether from `download_magic_from_id` or an uploaded file), `ipmag.download_magic()` (a different, confusingly-similarly-named function — this one is a local file unpacker, not a network downloader) unpacks it into individual table files:
+
+```python
+ipmag.download_magic('magic_contribution_19938.txt', dir_path='./data/', input_dir_path='./data/')
 ```
 
 This produces individual files such as `./data/sites.txt`, `./data/samples.txt`, etc., each of which can be read with pandas:
@@ -39,6 +41,27 @@ sites = pd.read_csv('./data/sites.txt', sep='\t', skiprows=1)
 ```
 
 The `skiprows=1` skips the MagIC table-type header line (e.g. `tab	sites`).
+
+### Example: loading an uploaded contribution file directly
+
+If working from an uploaded `magic_contribution_{ID}.txt` and `ipmag.download_magic()`'s directory conventions are inconvenient (e.g. for a single quick analysis), the `sites` table can be extracted directly by locating the `tab delimited\tsites` marker line and reading from the following line as the table header:
+
+```python
+import pandas as pd
+
+with open('magic_contribution_19938.txt') as f:
+    lines = f.readlines()
+
+# Find the line announcing the sites table
+sites_start = next(i for i, line in enumerate(lines) if line.strip() == 'tab delimited\tsites')
+
+with open('sites_table.txt', 'w') as f:
+    f.writelines(lines[sites_start + 1:])
+
+sites = pd.read_csv('sites_table.txt', sep='\t')
+```
+
+This is a simple, self-contained parsing step (not a calculation covered by `functions/policy.md`'s "use PmagPy functions" rule) and is the approach used for the worked examples in `community/edge_cases.md`. Prefer `ipmag.download_magic()` when working with a full multi-table contribution and standard directory layouts; this direct approach is convenient for single-file, single-table extraction.
 
 ## Filtering for site mean directions
 

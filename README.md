@@ -39,4 +39,12 @@ You do not need to know how to code to contribute — these are plain text files
 
 ## Status
 
-This is an early demonstration version covering a single workflow (the reversal/common mean test) as a proof of concept. See `INDEX.md` for what is currently available.
+This is an early demonstration version. It currently covers:
+
+- One full workflow: the reversal/common mean test (`workflows/reversal_test.md`)
+- A function-use policy (`functions/policy.md`) requiring real PmagPy function calls rather than improvised calculations
+- An auto-generated reference of the full `pmagpy.ipmag` API plus a curated `pmagpy.pmag` subset (`functions/reference_index.md`), generated against PmagPy 4.3.15
+- Hand-curated, verified documentation for the statistics/test functions used by the reversal test workflow (`functions/statistics_and_tests.md`)
+- Real worked examples from development/testing, including a documented disagreement between two statistical tests on the same dataset (`community/edge_cases.md`)
+
+See `INDEX.md` for the full module list and what is not yet covered.
