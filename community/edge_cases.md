@@ -4,13 +4,17 @@ This file collects practical observations, edge cases, and notes from real use o
 
 ---
 
-## Fetching knowledge base files: `curl` via code execution vs. `web_fetch`
+## Fetching knowledge base files: `git clone` (preferred), `curl`, vs. `web_fetch`
 
-**Observation:** In claude.ai, `web_fetch`-style tools may restrict fetching to URLs that have already appeared in a search or fetch result. Since `INDEX.md` is the only URL the user provides directly, this can cause every *other* file in this knowledge base (policy, workflows, function references, etc.) to fail on first attempt with a `web_fetch`-style tool, even though the URLs are written out explicitly in `INDEX.md`.
+**Observation:** In claude.ai, `web_fetch`-style tools may restrict fetching to URLs that have already appeared in a search or fetch result. Since `INDEX.md` is the only URL the user provides directly, this can cause every *other* file in this knowledge base (policy, workflows, function references, etc.) to fail on first attempt with a `web_fetch`-style tool, even though the URLs are written out explicitly in `INDEX.md`. This was observed across multiple independent fresh-conversation tests.
 
-**Working solution:** `raw.githubusercontent.com` is reachable via `curl` from a code/bash execution tool, even in sandboxes where `web_fetch` is restricted as above (this is a *different* allowlist than the one that blocks `api.earthref.org` — see the entry below). Fetching `INDEX.md`'s referenced files via `curl -sL <url>` (optionally in a loop, to fetch several files in one command) worked reliably where `web_fetch` did not.
+**Most robust solution found: `git clone https://github.com/dave-heslop74/PmagPylot.git` via a code/bash execution tool.** `github.com` is commonly reachable from sandboxed code execution environments. This retrieves the entire repository in one command, sidestepping per-file URL restrictions entirely — no individual file can be "missed" or blocked separately. This was the method that worked cleanly in a fresh-conversation test after `curl`-per-file and `web_fetch` both required workarounds or failed.
 
-**Implication:** `INDEX.md` documents `curl`/code-execution as the preferred fetch method, with `web_fetch` as a fallback. If a session reports being unable to fetch sibling files via `web_fetch`, this is expected in some environments — the assistant should switch to `curl` via code execution rather than retrying searches.
+**Secondary solution: `curl -sL <url>` per file** via code execution, also reachable in the same sandboxes — works, but requires fetching each file individually (or looping), and is one extra layer of indirection compared to cloning.
+
+**Implication:** `INDEX.md` documents `git clone` as the preferred method, `curl` per-file as a fallback, and `web_fetch` as a last resort. If a session reports being unable to fetch sibling files via `web_fetch`, this is expected in some environments — the assistant should switch to `git clone` via code execution rather than retrying searches or fetching files one at a time.
+
+**Maintenance note:** Because `git clone` retrieves the *entire* repository verbatim, stale or removed files left in the GitHub repo (e.g. an old file that has been superseded locally but not deleted from GitHub) will still be present in a clone and could be read by the assistant. Repository maintainers should ensure files removed from the intended structure (per `INDEX.md`'s "Available modules") are also deleted from the GitHub repo itself, not just reorganized locally.
 
 ---
 

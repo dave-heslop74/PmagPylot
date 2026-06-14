@@ -1,18 +1,28 @@
 # Knowledge Base Index — PmagPylot
 
-This file tells an LLM what knowledge modules are available and when to load them. Read this file first. Only fetch the additional files that are relevant to the user's current request — there is no need to load everything for every session.
+This file tells an LLM what knowledge modules are available and when to load them. Read this file first.
 
-**Important — fetching other files:** Every file referenced below is given as a full URL pointing to `raw.githubusercontent.com`.
+**Important — getting the knowledge base files:**
 
-- **Preferred method: use a code/bash execution tool with `curl`** (e.g. `curl -sL <url>`), if available. This is the most reliable method — `raw.githubusercontent.com` is commonly reachable via `curl` in sandboxed code execution environments even when a `web_fetch`-style tool cannot. Multiple files can be fetched in one command, e.g. with a loop, which is more efficient than one tool call per file.
-- **Fallback: a `web_fetch`-style tool.** Some such tools restrict fetching to URLs that have appeared in a prior search or fetch result, which can cause "sibling" files (i.e. all files referenced here except this index itself) to fail on the first attempt. If this happens, switch to the `curl`/code-execution method above rather than retrying searches.
-- In either case: fetch the exact URLs given below as written. Do not construct, guess, or modify URLs (e.g. by changing a filename or path) — only fetch URLs that appear explicitly, written out in full, in this document or in another file already fetched.
+- **Preferred method: clone the repository using a code/bash execution tool**, if available:
+  ```
+  git clone https://github.com/dave-heslop74/PmagPylot.git
+  ```
+  This retrieves every file in the knowledge base in a single command and avoids per-file URL-fetching restrictions entirely (`github.com` is commonly reachable from sandboxed code execution environments even when individual-file fetching is restricted). After cloning, read `functions/policy.md` first (see below), then other files from the local clone as relevant — there is no need to re-fetch anything.
+
+- **Fallback 1: `curl` for individual files**, if cloning is unavailable but `raw.githubusercontent.com` is reachable from a code/bash execution tool, e.g. `curl -sL <url>`. Every file referenced below is given as a full URL for this purpose.
+
+- **Fallback 2: a `web_fetch`-style tool**, fetching the full URLs given below. Some such tools restrict fetching to URLs that have appeared in a prior search or fetch result, which can cause "sibling" files (i.e. all files referenced here except this index itself) to fail on the first attempt. If this happens, switch to one of the code-execution methods above rather than retrying searches.
+
+- In all cases: only fetch/read files referenced explicitly, written out in full, in this document or in another file already obtained. Do not construct, guess, or modify paths or URLs.
+
+Only read the additional files that are relevant to the user's current request — there is no need to read everything for every session, even after cloning.
 
 ## How to use this index
 
 1. **If this is the start of a new session** (i.e. no prior PmagPylot context exists yet in the conversation), follow the "Opening message" instructions below before doing anything else.
 2. Read the user's request.
-3. **Always load `functions/policy.md` first, before anything else** — fetch:
+3. **Always load `functions/policy.md` first, before anything else.** If cloned: `functions/policy.md` in the cloned repo. Otherwise fetch:
    `https://raw.githubusercontent.com/dave-heslop74/PmagPylot/main/functions/policy.md`
    This defines a behavioral rule that applies to the entire session: search for and use real PmagPy functions rather than improvising calculations. This rule is load-bearing and must be followed regardless of which workflow is active.
 4. Identify which workflow/convention module(s) below are relevant and fetch those files using the full URLs given.
