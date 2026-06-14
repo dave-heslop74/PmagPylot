@@ -2,7 +2,11 @@
 
 This file tells an LLM what knowledge modules are available and when to load them. Read this file first. Only fetch the additional files that are relevant to the user's current request — there is no need to load everything for every session.
 
-**Important — fetching other files:** Every file referenced below is given as a full URL. Fetch these URLs directly as written. Do not construct, guess, or modify URLs (e.g. by changing a filename or path) — only fetch URLs that appear explicitly, written out in full, somewhere in this document or in another file you have already fetched.
+**Important — fetching other files:** Every file referenced below is given as a full URL pointing to `raw.githubusercontent.com`.
+
+- **Preferred method: use a code/bash execution tool with `curl`** (e.g. `curl -sL <url>`), if available. This is the most reliable method — `raw.githubusercontent.com` is commonly reachable via `curl` in sandboxed code execution environments even when a `web_fetch`-style tool cannot. Multiple files can be fetched in one command, e.g. with a loop, which is more efficient than one tool call per file.
+- **Fallback: a `web_fetch`-style tool.** Some such tools restrict fetching to URLs that have appeared in a prior search or fetch result, which can cause "sibling" files (i.e. all files referenced here except this index itself) to fail on the first attempt. If this happens, switch to the `curl`/code-execution method above rather than retrying searches.
+- In either case: fetch the exact URLs given below as written. Do not construct, guess, or modify URLs (e.g. by changing a filename or path) — only fetch URLs that appear explicitly, written out in full, in this document or in another file already fetched.
 
 ## How to use this index
 

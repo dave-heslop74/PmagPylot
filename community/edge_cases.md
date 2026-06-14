@@ -4,11 +4,23 @@ This file collects practical observations, edge cases, and notes from real use o
 
 ---
 
+## Fetching knowledge base files: `curl` via code execution vs. `web_fetch`
+
+**Observation:** In claude.ai, `web_fetch`-style tools may restrict fetching to URLs that have already appeared in a search or fetch result. Since `INDEX.md` is the only URL the user provides directly, this can cause every *other* file in this knowledge base (policy, workflows, function references, etc.) to fail on first attempt with a `web_fetch`-style tool, even though the URLs are written out explicitly in `INDEX.md`.
+
+**Working solution:** `raw.githubusercontent.com` is reachable via `curl` from a code/bash execution tool, even in sandboxes where `web_fetch` is restricted as above (this is a *different* allowlist than the one that blocks `api.earthref.org` — see the entry below). Fetching `INDEX.md`'s referenced files via `curl -sL <url>` (optionally in a loop, to fetch several files in one command) worked reliably where `web_fetch` did not.
+
+**Implication:** `INDEX.md` documents `curl`/code-execution as the preferred fetch method, with `web_fetch` as a fallback. If a session reports being unable to fetch sibling files via `web_fetch`, this is expected in some environments — the assistant should switch to `curl` via code execution rather than retrying searches.
+
+---
+
 ## `ipmag.download_magic_from_id()` and sandboxed network access
 
 **Observation:** `ipmag.download_magic_from_id()` is the correct, tested PmagPy function for retrieving a contribution by ID (preferred per `functions/policy.md` over a hand-rolled `requests.get()`). However, in claude.ai's bash/code execution sandbox, it fails with `success=False, result="Failed to download: Forbidden"` — because, like any direct call to `api.earthref.org`, it is blocked by the sandbox's network egress allowlist.
 
 **Why this matters:** This is not a defect in the function, and not something a different PmagPy function or a manual `requests` call would fix — both paths reach the same blocked host. It's a useful "stop" signal: if `download_magic_from_id` fails with "Forbidden" (as opposed to e.g. a 404 for a genuinely missing contribution ID), the cause is almost certainly the execution environment's network policy, not the contribution ID or the function call itself. At that point, switch to the upload-zip alternative in `conventions/data_loading.md` rather than retrying API variations.
+
+**Note the contrast with the `curl`/`raw.githubusercontent.com` entry above:** the same sandbox can have *different* allowlist outcomes for different hosts (`raw.githubusercontent.com` reachable, `api.earthref.org` blocked) — so "network access didn't work for X" does not imply "network access won't work for Y."
 
 **In environments with normal network access** (local installs, Tier 1/2 deployments per `README.md`), `download_magic_from_id` is expected to work normally and should be the default data-loading method.
 
