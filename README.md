@@ -15,7 +15,7 @@ It is **not code** — it is a set of plain-text documents (Markdown and YAML) t
 At the start of a session with an LLM (e.g. Claude, ChatGPT, Gemini), point it at this repository and ask it to read the relevant files before helping with your analysis. For example:
 
 > "Please fetch and read the files at
-> `https://raw.githubusercontent.com/<org>/pmagpy-assistant-knowledge/main/INDEX.md`
+> `https://raw.githubusercontent.com/dave-heslop74/PmagPylot/main/INDEX.md`
 > and follow the index to load the reversal test workflow. Then help me run a
 > reversal test on MagIC contribution 16663."
 
