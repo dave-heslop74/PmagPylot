@@ -14,7 +14,13 @@ It is **not code** — it is a set of plain-text documents (Markdown) that descr
 
 At the start of a session with an LLM (e.g. Claude, ChatGPT, Gemini), point it at this repository's index file and ask it to read and follow it:
 
-> "Please clone this repository using a code/bash execution tool: git clone https://github.com/dave-heslop74/PmagPylot.git. Then read INDEX.md from the local clone and follow it to load whatever else is relevant. I'd like your help with a paleomagnetic data analysis."
+> "Please clone this repository using a code/bash execution tool:
+> `git clone https://github.com/dave-heslop74/PmagPylot.git`. Also ensure
+> PmagPy is installed and importable (e.g.
+> `pip install --quiet --break-system-packages pmagpy` if needed), suppressing
+> routine installer output so it isn't shown to me. Then read `INDEX.md` from
+> the local clone and follow it to load whatever else is relevant. I'd like
+> your help with a paleomagnetic data analysis."
 
 The LLM will use `INDEX.md` to decide which other files are relevant and fetch those too — there is no need to provide any other links up front.
 
@@ -32,8 +38,9 @@ If a user's request isn't covered by the current knowledge base, the assistant s
 
 For published analyses, we recommend specifying a release tag or commit hash rather than `main`, so that the knowledge base version used is recorded alongside the PmagPy version. For example:
 
-> "...read the files at
-> `https://raw.githubusercontent.com/dave-heslop74/PmagPylot/v0.1.0/INDEX.md`..."
+> "...clone the repository and check out the `v0.1.0` tag before reading
+> `INDEX.md`: `git clone https://github.com/dave-heslop74/PmagPylot.git && cd
+> PmagPylot && git checkout v0.1.0`..."
 
 ## Contributing
 
