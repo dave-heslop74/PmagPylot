@@ -9,13 +9,15 @@ This knowledge base consists of multiple files in a GitHub repository. **As your
 ```
 git clone https://github.com/dave-heslop74/PmagPylot.git
 ```
-**Also as part of this first step**, check that PmagPy is installed and importable, and install it quietly if not:
+
+**Also as part of this first step**, check that PmagPy is installed and importable, and install it if not:
+
 ```bash
 python -c "import pmagpy.ipmag" 2>/dev/null || pip install --quiet --break-system-packages pmagpy
 ```
-Run this check/install **before** any analysis steps, regardless of whether the user has mentioned PmagPy explicitly — every workflow in this knowledge base depends on it. If the install step runs, **do not surface its routine output (progress bars, "Successfully installed...", version-resolution messages, etc.) to the user** — these look like warnings or errors but are normal and not informative for someone following a paleomagnetic analysis. Only mention this step to the user if the install genuinely fails (e.g. no network access to PyPI), in which case explain the failure plainly and suggest the user check their environment.
 
-- **If the clone succeeds:** read `functions/policy.md` from the local clone first (see "Always load" below), then other files from the clone as relevant. There is no need to fetch anything over the web for the rest of this session — proceed directly with local file reads.
+This should happen before any analysis steps, regardless of whether the user has mentioned PmagPy explicitly — every workflow in this knowledge base depends on it.
+
 - **If a code/bash execution tool is not available in this session, or the clone command fails for an environment reason (e.g. network/tooling unavailable):** fall back to `curl -sL <url>` per file via code execution if possible (every file is given as a full URL below), and only if no code execution is possible at all, fall back to a `web_fetch`-style tool on the full URLs given below.
 
 **Do not start with `web_fetch` and only fall back to cloning if `web_fetch` fails.** Some `web_fetch`-style tools restrict fetching to URLs that have already appeared in a prior search or fetch result — this means `INDEX.md` itself (provided directly by the user) may fetch successfully, while every *sibling* file referenced from it fails on the first attempt, typically with an error like "This URL was not in any prior search or fetch result." If this error is encountered anyway (e.g. because `web_fetch` was tried first despite the guidance above, or because cloning failed partway through):
@@ -32,7 +34,7 @@ Only read the additional files that are relevant to the user's current request �
 
 ## How to use this index
 
-1. **If this is the start of a new session** (i.e. no prior PmagPylot context exists yet in the conversation), follow the "Opening message" instructions below before doing anything else.
+1. **If this is the start of a new session** (i.e. this knowledge base hasn't been loaded yet in the conversation), follow the "Opening message" guidance below before doing anything else.
 2. Read the user's request.
 3. **Always load `functions/policy.md` first, before anything else** — from the local clone obtained in Step 0 (`functions/policy.md`). This defines a behavioral rule that applies to the entire session: search for and use real PmagPy functions rather than improvising calculations. This rule is load-bearing and must be followed regardless of which workflow is active.
 4. Identify which workflow/convention module(s) below are relevant and fetch those files using the full URLs given.
@@ -41,14 +43,14 @@ Only read the additional files that are relevant to the user's current request �
 
 ## Opening message
 
-When a session starts (the user has just pointed the assistant at this index, with or without an accompanying request), the assistant should introduce itself as **PmagPylot** and:
+When a session starts (the user has just pointed the assistant at this index, with or without an accompanying request), the assistant can introduce what this knowledge base offers:
 
 1. **Briefly state what it can currently help with**, based on the "Available modules" section below — do not list every function or file, just describe the analyses available in plain terms (currently: the reversal/common mean test, including test selection, prerequisite checking, and interpretation). As more workflow files are added to this knowledge base over time, this description should reflect whatever is actually available at the time, not a fixed list.
 2. **Give 2-3 concrete example prompts** the user could try, e.g. "run a reversal test on my site mean directions" or "I have normal and reversed polarity sites — are they antipodal?"
 3. **Ask the user to provide their MagIC data**, if they haven't already: prompt them to download the relevant contribution(s) as a zip from [earthref.org/MagIC](https://www2.earthref.org/MagIC) and upload/attach the file(s) to the conversation. See `conventions/data_loading.md` (URL below) for how this is handled once received, and for the preferred `ipmag.download_magic_from_id()` method in environments where direct API access works.
-4. If the user's original message already included a specific request and/or an uploaded file, the assistant can fold the introduction into the response to that request rather than presenting it as a separate first step — but the introduction (what PmagPylot can do, example prompts, and a prompt for data if not yet provided) should still appear.
+4. If the user's original message already included a specific request and/or an uploaded file, this introduction can be folded into the response to that request rather than presented as a separate first step — but it should still appear in some form (what's available, example prompts, and a prompt for data if not yet provided).
 
-Keep this opening concise — a short paragraph plus a few examples, not an exhaustive manual.
+Keep this concise — a short paragraph plus a few examples, not an exhaustive manual.
 
 ## Always load
 
