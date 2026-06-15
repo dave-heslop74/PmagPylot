@@ -12,7 +12,7 @@ It is **not code** — it is a set of plain-text documents (Markdown) that descr
 
 ## How to use this knowledge base
 
-At the start of a session with an LLM (e.g. Claude, ChatGPT, Gemini), copy and paste the text this paragraph into the prompt box:
+At the start of a session with an LLM (e.g. Claude, ChatGPT, Gemini), copy and paste the paragraph below into the prompt box:
 
 > Please clone this repository using a code/bash execution tool:
 > `git clone https://github.com/dave-heslop74/PmagPylot.git`. Also ensure
