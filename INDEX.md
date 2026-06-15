@@ -5,18 +5,6 @@ This file tells an LLM what knowledge modules are available and when to load the
 **Important — getting the knowledge base files:**
 
 - **Preferred method: clone the repository using a code/bash execution tool**, if available:
-  ```
-  git clone https://github.com/dave-heslop74/PmagPylot.git
-  ```
-  This retrieves every file in the knowledge base in a single command and avoids per-file URL-fetching restrictions entirely (`github.com` is commonly reachable from sandboxed code execution environments even when individual-file fetching is restricted). After cloning, read `functions/policy.md` first (see below), then other files from the local clone as relevant — there is no need to re-fetch anything.
-
-- **Fallback 1: `curl` for individual files**, if cloning is unavailable but `raw.githubusercontent.com` is reachable from a code/bash execution tool, e.g. `curl -sL <url>`. Every file referenced below is given as a full URL for this purpose.
-
-- **Fallback 2: a `web_fetch`-style tool**, fetching the full URLs given below. Some such tools restrict fetching to URLs that have appeared in a prior search or fetch result, which can cause "sibling" files (i.e. all files referenced here except this index itself) to fail on the first attempt. If this happens, switch to one of the code-execution methods above rather than retrying searches.
-
-- In all cases: only fetch/read files referenced explicitly, written out in full, in this document or in another file already obtained. Do not construct, guess, or modify paths or URLs.
-
-Only read the additional files that are relevant to the user's current request — there is no need to read everything for every session, even after cloning.
 
 ## How to use this index
 
