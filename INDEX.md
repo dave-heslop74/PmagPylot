@@ -2,17 +2,34 @@
 
 This file tells an LLM what knowledge modules are available and when to load them. Read this file first.
 
-**Important — getting the knowledge base files:**
+**Step 0 — getting the knowledge base files (do this before reading anything else below):**
 
-- **Preferred method: clone the repository using a code/bash execution tool**, if available:
+This knowledge base consists of multiple files in a GitHub repository. **As your very first action upon being pointed at this file, before fetching or reading any other file referenced in this index, attempt to clone the repository using a code/bash execution tool:**
+
+```
+git clone https://github.com/dave-heslop74/PmagPylot.git
+```
+
+- **If the clone succeeds:** read `functions/policy.md` from the local clone first (see "Always load" below), then other files from the clone as relevant. There is no need to fetch anything over the web for the rest of this session — proceed directly with local file reads.
+- **If a code/bash execution tool is not available in this session, or the clone command fails for an environment reason (e.g. network/tooling unavailable):** fall back to `curl -sL <url>` per file via code execution if possible (every file is given as a full URL below), and only if no code execution is possible at all, fall back to a `web_fetch`-style tool on the full URLs given below.
+
+**Do not start with `web_fetch` and only fall back to cloning if `web_fetch` fails.** Some `web_fetch`-style tools restrict fetching to URLs that have already appeared in a prior search or fetch result — this means `INDEX.md` itself (provided directly by the user) may fetch successfully, while every *sibling* file referenced from it fails on the first attempt, typically with an error like "This URL was not in any prior search or fetch result." If this error is encountered anyway (e.g. because `web_fetch` was tried first despite the guidance above, or because cloning failed partway through):
+
+- **This is expected** and is not a problem with this knowledge base, the requested file, or the URL — all URLs here are written out in full and are correct.
+- **Do not** report this to the user as a blocker or a reason the knowledge base can't be used.
+- **Do not** retry the same `web_fetch` call, try variant URLs, search the web for the file, or attempt to fetch the GitHub repo's HTML page instead of the raw file.
+- **Immediately run the `git clone` command above** via a code/bash execution tool — this resolves the issue completely.
+- Only if a code/bash execution tool genuinely is not available in this session should this limitation be mentioned to the user, e.g.: "I don't have code execution available in this session, so I can't reliably load this knowledge base's files — could you paste the contents of [file] directly, or let me know if code execution can be enabled?"
+
+In all cases: only read files referenced explicitly, written out in full, in this document or in another file already obtained. Do not construct, guess, or modify paths or URLs.
+
+Only read the additional files that are relevant to the user's current request — there is no need to read everything for every session, even after cloning.
 
 ## How to use this index
 
 1. **If this is the start of a new session** (i.e. no prior PmagPylot context exists yet in the conversation), follow the "Opening message" instructions below before doing anything else.
 2. Read the user's request.
-3. **Always load `functions/policy.md` first, before anything else.** If cloned: `functions/policy.md` in the cloned repo. Otherwise fetch:
-   `https://raw.githubusercontent.com/dave-heslop74/PmagPylot/main/functions/policy.md`
-   This defines a behavioral rule that applies to the entire session: search for and use real PmagPy functions rather than improvising calculations. This rule is load-bearing and must be followed regardless of which workflow is active.
+3. **Always load `functions/policy.md` first, before anything else** — from the local clone obtained in Step 0 (`functions/policy.md`). This defines a behavioral rule that applies to the entire session: search for and use real PmagPy functions rather than improvising calculations. This rule is load-bearing and must be followed regardless of which workflow is active.
 4. Identify which workflow/convention module(s) below are relevant and fetch those files using the full URLs given.
 5. When a specific calculation is needed, consult `functions/reference_index.md` to find the relevant PmagPy function before writing any code, and `functions/statistics_and_tests.md` for richer guidance on functions used by the reversal test workflow specifically (URLs below).
 6. If a request doesn't map to any module here, say so honestly rather than guessing — and proceed using general paleomagnetic knowledge with appropriate caution, following the function-use policy.
