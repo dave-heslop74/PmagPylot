@@ -9,6 +9,11 @@ This knowledge base consists of multiple files in a GitHub repository. **As your
 ```
 git clone https://github.com/dave-heslop74/PmagPylot.git
 ```
+**Also as part of this first step**, check that PmagPy is installed and importable, and install it quietly if not:
+```bash
+python -c "import pmagpy.ipmag" 2>/dev/null || pip install --quiet --break-system-packages pmagpy
+```
+Run this check/install **before** any analysis steps, regardless of whether the user has mentioned PmagPy explicitly — every workflow in this knowledge base depends on it. If the install step runs, **do not surface its routine output (progress bars, "Successfully installed...", version-resolution messages, etc.) to the user** — these look like warnings or errors but are normal and not informative for someone following a paleomagnetic analysis. Only mention this step to the user if the install genuinely fails (e.g. no network access to PyPI), in which case explain the failure plainly and suggest the user check their environment.
 
 - **If the clone succeeds:** read `functions/policy.md` from the local clone first (see "Always load" below), then other files from the clone as relevant. There is no need to fetch anything over the web for the rest of this session — proceed directly with local file reads.
 - **If a code/bash execution tool is not available in this session, or the clone command fails for an environment reason (e.g. network/tooling unavailable):** fall back to `curl -sL <url>` per file via code execution if possible (every file is given as a full URL below), and only if no code execution is possible at all, fall back to a `web_fetch`-style tool on the full URLs given below.
