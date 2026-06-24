@@ -80,7 +80,37 @@ Relevant columns for direction-based workflows typically include:
 | `dir_k` | Fisher precision parameter (κ) for the site |
 | `dir_alpha95` | 95% confidence cone (α95, degrees) |
 | `dir_n_samples` | Number of samples contributing to the site mean |
+| `dir_polarity` | Polarity assignment (e.g. `n`, `r`, `u`) — not always present |
 | `method_codes` | Pipe- or colon-separated list of method codes describing how the direction was derived |
+
+## Bedding orientation columns (fold test)
+
+The fold test additionally requires bedding orientation for each site. In the MagIC data model these are stored in the `sites` table alongside the directional data:
+
+| Column | Meaning |
+|---|---|
+| `bed_dip_direction` | Dip direction of bedding (degrees, 0–360; the direction the bed dips toward, perpendicular to strike) |
+| `bed_dip` | Dip of bedding (degrees, 0–90) |
+
+These columns are not always populated — many MagIC contributions omit bedding data, particularly older contributions or those from studies that did not perform a fold test. Before starting a fold test workflow, always check that these columns are present and contain non-null values:
+
+```python
+bedding_present = ('bed_dip_direction' in sites.columns and 'bed_dip' in sites.columns)
+if bedding_present:
+    n_with_bedding = sites[['bed_dip_direction', 'bed_dip']].dropna().shape[0]
+    print(f"Sites with bedding data: {n_with_bedding} of {len(sites)}")
+else:
+    print("Bedding orientation columns not found in this contribution.")
+```
+
+If the columns are absent or mostly empty, the fold test cannot be run and the user should be informed clearly — the absence of bedding data in a MagIC contribution is common and not an error.
+
+**Note on alternative column names:** some older MagIC contributions may use `dip_direction` and `dip` rather than the MagIC 3.0 standard `bed_dip_direction` and `bed_dip`. If the expected columns are missing, check for these alternatives:
+
+```python
+bedding_cols = [c for c in sites.columns if 'dip' in c.lower() or 'bed' in c.lower() or 'strike' in c.lower()]
+print("Possible bedding columns:", bedding_cols)
+```
 
 ## A note for the LLM on data inspection
 
