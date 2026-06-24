@@ -46,8 +46,8 @@ Only read the additional files that are relevant to the user's current request �
 
 When a session starts (the user has just pointed the assistant at this index, with or without an accompanying request), the assistant can introduce what this knowledge base offers:
 
-1. **Briefly state what it can currently help with**, based on the "Available modules" section below — do not list every function or file, just describe the analyses available in plain terms (currently: the reversal/common mean test and the conglomerate test, both including test selection, prerequisite checking, and interpretation). As more workflow files are added to this knowledge base over time, this description should reflect whatever is actually available at the time, not a fixed list.
-2. **Give 2-3 concrete example prompts** the user could try, e.g. "run a reversal test on my site mean directions", "I have normal and reversed polarity sites — are they antipodal?", or "run a conglomerate test on my clast directions".
+1. **Briefly state what it can currently help with**, based on the "Available modules" section below — do not list every function or file, just describe the analyses available in plain terms (currently: the reversal/common mean test, the conglomerate test, and the bootstrap fold test, all including prerequisite checking and interpretation). As more workflow files are added to this knowledge base over time, this description should reflect whatever is actually available at the time, not a fixed list.
+2. **Give 2-3 concrete example prompts** the user could try, e.g. "run a reversal test on my site mean directions", "run a conglomerate test on my clast directions", or "I have directions and bedding data — can you run a fold test?".
 3. **Ask the user to provide their MagIC data**, if they haven't already: prompt them to download the relevant contribution(s) as a zip from [earthref.org/MagIC](https://www2.earthref.org/MagIC) and upload/attach the file(s) to the conversation. See `conventions/data_loading.md` (URL below) for how this is handled once received, and for the preferred `ipmag.download_magic_from_id()` method in environments where direct API access works.
 4. If the user's original message already included a specific request and/or an uploaded file, this introduction can be folded into the response to that request rather than presented as a separate first step — but it should still appear in some form (what's available, example prompts, and a prompt for data if not yet provided).
 
@@ -77,6 +77,10 @@ Keep this concise — a short paragraph plus a few examples, not an exhaustive m
   `https://raw.githubusercontent.com/dave-heslop74/PmagPylot/main/workflows/conglomerate_test.md`
   The full workflow for the Watson (1956) conglomerate test — a test of whether clast directions from a conglomerate or breccia are randomly distributed on the sphere, as expected if the remanent magnetisation is pre-depositional. Covers geological context checks, prerequisites (sample size, clast independence), hypothesis statements, running `ipmag.conglomerate_test_Watson()`, and interpretation. Load this whenever the user mentions a conglomerate test, clast directions, or asks to test whether directions are randomly distributed.
 
+- **`workflows/fold_test.md`**
+  `https://raw.githubusercontent.com/dave-heslop74/PmagPylot/main/workflows/fold_test.md`
+  The full workflow for the Tauxe and Watson (1994) bootstrap fold test — a test of whether paleomagnetic directions become more tightly clustered upon progressive unfolding of bedding, indicating a pre-folding (primary) remanence. Requires both paleomagnetic directions and bedding orientations (dip direction and dip) for each site. Covers geological context checks, data loading (including bedding columns), prerequisites (sample size, dip range, coordinate system), running `ipmag.bootstrap_fold_test()`, and interpretation of the three output plots. Load this whenever the user mentions a fold test, tilt correction for testing purposes, pre- vs post-folding remanence, or the Tauxe-Watson test.
+
 ### Function reference
 
 - **`functions/reference_index.md`**
@@ -97,7 +101,6 @@ Keep this concise — a short paragraph plus a few examples, not an exhaustive m
 
 The following are referenced by the long-term project plan but do not exist yet in this repository. If a user asks about these, say that this knowledge base does not yet cover them:
 
-- Fold tests (note: `ipmag.bootstrap_fold_test` exists in `functions/reference_index.md` but has no Tier 1 workflow file yet)
 - Tilt corrections / coordinate system conversions
 - Paleomagnetic pole calculation
 - Zijderveld diagram interpretation and PCA component selection
@@ -105,6 +108,6 @@ The following are referenced by the long-term project plan but do not exist yet 
 
 ## Versioning note
 
-This index currently covers two workflows (reversal/common mean test; conglomerate test) plus a full ipmag function reference. `functions/reference_index.md` was generated against PmagPy 4.3.15 — if a different version is installed, function signatures may differ; see `functions/policy.md` for what to do in that case.
+This index currently covers three workflows (reversal/common mean test; conglomerate test; bootstrap fold test) plus a full ipmag function reference. `functions/reference_index.md` was generated against PmagPy 4.3.15 — if a different version is installed, function signatures may differ; see `functions/policy.md` for what to do in that case.
 
 If using a versioned/tagged release rather than `main`, all URLs above should have `main` replaced with the relevant tag or commit hash (e.g. `.../PmagPylot/v0.1.0/...`).
